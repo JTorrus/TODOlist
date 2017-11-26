@@ -7,20 +7,21 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Entity\Task;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class TaskController extends Controller
 {
     public function addAction(Request $request)
     {
         $task = new Task();
-        $task->setTitle('Write a blog post');
+        $task->setTitle('');
         $task->setDueDate(new \DateTime('tomorrow'));
 
         $form = $this->createFormBuilder($task)
           ->add('title', TextType::class)
-          ->add('duedate', DateType::class)
+          ->add('duedate', DateTimeType::class)
           ->add('save', SubmitType::class, array('label' => 'Create Task'))
           ->getForm();
 
@@ -39,17 +40,19 @@ class TaskController extends Controller
         ));
     }
 
-    public function editAction()
+    public function editAction(Request $request)
     {
+
         return $this->render('AppBundle:Task:edit.html.twig', array(
             // ...
         ));
     }
 
-    public function removeAction()
+    public function removeAction(Request $request)
     {
+
         return $this->render('AppBundle:Task:remove.html.twig', array(
-            // ...
+          'form' => $form->createView(),
         ));
     }
 
