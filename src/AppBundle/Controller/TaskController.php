@@ -16,8 +16,6 @@ class TaskController extends Controller
     public function addAction(Request $request)
     {
         $task = new Task();
-        $task->setTitle('');
-        $task->setDueDate(new \DateTime('tomorrow'));
 
         $form = $this->createFormBuilder($task)
           ->add('title', TextType::class)
@@ -42,7 +40,6 @@ class TaskController extends Controller
 
     public function editAction(Request $request)
     {
-
         return $this->render('AppBundle:Task:edit.html.twig', array(
             // ...
         ));
@@ -50,6 +47,19 @@ class TaskController extends Controller
 
     public function removeAction(Request $request)
     {
+        $task = new Task();
+        $form = $this->createFormBuilder($task)
+          ->add('title', CheckboxType::class)
+          ->add('remove', SubmitType::class, array('label' => 'Remove Task'))
+          ->getForm();
+
+          if ($form->isSubmitted() && $form->isValid()) {
+            $task = $form->remove();
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($task);
+            $em->flush();
+          }
 
         return $this->render('AppBundle:Task:remove.html.twig', array(
           'form' => $form->createView(),
